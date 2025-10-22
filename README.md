@@ -1,148 +1,142 @@
-🧠 Weekly Mortality Forecasting with ARIMA and GARCH Models
+# 🧠 Weekly Mortality Forecasting with ARIMA and GARCH Models
 
-Author: Víctor Suesta Arribas
-Program: MSc in Data Science, Universitat Autònoma de Barcelona
-Course: Time Series Analysis (Practical Assignment 2, 2024/25)
+**Author:** Víctor Suesta Arribas
+**Program:** MSc in Data Science, Universitat Autònoma de Barcelona
+**Course:** Time Series Analysis (Practical Assignment 2, 2024/25)
 
-📘 Project Overview
+---
 
-This project applies advanced time series modeling techniques in R to analyze and forecast weekly mortality data from 2010 to 2024.
-The analysis is based on official data from INE (Instituto Nacional de Estadística, Spain), with the objective of detecting trend, seasonality, and volatility patterns, as well as assessing the impact of the COVID-19 pandemic on the mortality series.
+## 📘 Project Overview
 
-The workflow follows a complete Data Science pipeline — data preprocessing, exploratory visualization, model fitting, forecasting, and statistical validation.
+This project applies **advanced Data Science and statistical modeling techniques** to analyze and forecast **weekly mortality data** from Spain between 2010 and 2024.
+The study uses official data from the **Spanish National Statistics Institute (INE)** and focuses on identifying **trends, seasonal structures, and volatility patterns** in mortality behavior, while also quantifying the **impact of the COVID-19 pandemic**.
 
-🧩 Dataset
+The analysis is conducted entirely in **R**, following a complete **data science workflow**: data preprocessing, exploratory visualization, model fitting (ARIMA and GARCH), forecast generation, and diagnostic validation.
 
-Source: INE – Weekly Estimated Deaths Dataset
+---
 
-Variable: Number of weekly deaths (by province and gender)
+## 🧩 Dataset
 
-Period: 2010–2024 (first 52 weeks per year)
+* **Source:** [INE – Weekly Estimated Deaths (Spain)](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176990&menu=ultiDatos&idp=1254735576863)
+* **Variable:** Estimated weekly deaths by province and gender
+* **Period:** 2010–2024 (first 52 weeks per year)
+* **Frequency:** Weekly (52 observations per year)
+* **Encoding:** ISO-8859-1; decimal separator “,”
+* **Associated metadata:** `CorrespondenciaNIUvsCCAAvsSEXO (1).xlsx`
 
-Frequency: Weekly (52 obs/year)
+---
 
-Encoding: ISO-8859-1; decimal separator “,”
+## ⚙️ Methodology
 
-Download link: INEbase – Estimación del número de defunciones semanales
+### 1️⃣ Exploratory and Descriptive Analysis
 
-⚙️ Methodology
+* Filtered the dataset to retain **52 weeks per year (2010–2023)**.
+* Calculated **global mean** and **52-week moving average** to identify trends.
+* Detected a **significant upward trend** confirmed by linear regression (β ≈ 3.98, p < 0.01).
 
-The analysis proceeds through systematic statistical modeling steps to understand and forecast the weekly mortality trend:
+### 2️⃣ Seasonality and COVID-19 Effect
 
-1️⃣ Exploratory Analysis
+* Seasonal decomposition and **weekly season plots** confirmed recurring annual cycles.
+* Introduced a **COVID dummy variable** (2020–2021 = 1) → significant positive effect (β ≈ 42.8, p < 0.01).
 
-Filtering data to include 52 weeks per year (2010–2023).
+### 3️⃣ Stationarity and Differencing
 
-Visualization with global mean and 52-week moving average to identify long-term trends.
+* Applied **first differencing** and **seasonal differencing (lag = 52)** to remove trend and stabilize variance.
+* Verified **stationarity** using the Augmented Dickey–Fuller (ADF) test (p < 0.01).
 
-Detection of positive linear trend confirmed by regression (β ≈ 3.98, p < 0.01).
+### 4️⃣ ARIMA Modeling
 
-2️⃣ Seasonality and COVID Impact
+* Selected model by `auto.arima()`: **ARIMA(0,1,1)**.
+* Captures short-term dependencies and non-stationary patterns efficiently.
+* Produced forecasts for 2024, consistent with real data and within confidence intervals.
 
-Seasonal decomposition and weekly season plot revealing recurrent annual patterns.
+### 5️⃣ Residual Diagnostics
 
-COVID indicator variable (2020–2021) tested via regression → significant positive effect (β ≈ 42.8, p < 0.01).
+* Ljung–Box tests on residuals and squared residuals show **no autocorrelation**.
+* Confirms model adequacy before modeling volatility.
 
-3️⃣ Stationarity and Differencing
+### 6️⃣ GARCH Modeling
 
-Sequential differencing (first difference + seasonal difference, lag 52) to achieve stationarity.
+* Fitted **GARCH(1,0)**, **GARCH(1,1)**, and **GARCH(2,1)** to model conditional variance.
+* Selected **GARCH(1,1)** based on the lowest AIC (≈120.5).
+* The model captures volatility clustering and heteroskedasticity effectively.
 
-ADF test confirms stationarity (p < 0.01).
+---
 
-4️⃣ ARIMA Modeling
+## 📈 Key Results
 
-Candidate model suggested by auto.arima(): ARIMA(0,1,1).
+| Model        | Description            |  AIC  | Notes                                                  |
+| :----------- | :--------------------- | :---: | :----------------------------------------------------- |
+| ARIMA(0,1,1) | Main forecasting model | 780.1 | Captures temporal structure and short-term correlation |
+| GARCH(1,1)   | Volatility model       | 120.5 | Best representation of conditional variance            |
 
-Model captures short-term dependencies and stabilizes non-stationary behavior.
+**Summary of insights:**
 
-Forecast for 2024 compared with observed data: coherent within confidence intervals.
+* Weekly mortality displays **trend + seasonal patterns** pre-COVID.
+* COVID introduced a **structural disruption** (2020–2021).
+* The ARIMA–GARCH framework models both **mean dynamics** and **variance volatility** effectively.
 
-5️⃣ Residual Diagnostics
+---
 
-Ljung–Box tests on residuals and squared residuals confirm absence of autocorrelation.
+## 🧮 Data Science Workflow
 
-Validation of model adequacy before extending to volatility analysis.
+1. **Data preprocessing** → filtering, cleaning, encoding normalization.
+2. **Exploratory analysis** → visualization, trend and seasonal decomposition.
+3. **Feature engineering** → creation of COVID indicator variable.
+4. **Model fitting** → ARIMA for mean dynamics; GARCH for volatility.
+5. **Forecasting** → out-of-sample predictions for 2024.
+6. **Evaluation** → AIC selection and residual diagnostics.
+7. **Communication** → synthesis of results in the PDF report.
 
-6️⃣ GARCH Modeling
+---
 
-Applied GARCH(1,0), GARCH(1,1), and GARCH(2,1) to residuals.
+## 🧠 Key Data Science Competencies
 
-Best model selected: GARCH(1,1) (lowest AIC ≈ 120.5).
+* Time Series Forecasting (ARIMA, GARCH)
+* Statistical Inference and Hypothesis Testing
+* Volatility Modeling and Risk Analysis
+* Feature Engineering with Exogenous Variables
+* Model Selection (AIC, Residual Diagnostics)
+* Visualization with ggplot2
+* Reproducible Workflows in R
 
-Captures conditional heteroskedasticity and residual volatility effectively.
+---
 
-📈 Key Results
-Model	Description	AIC	Notes
-ARIMA(0,1,1)	Main forecasting model	780.1	Captures trend and short-term correlation
-GARCH(1,1)	Residual volatility model	120.5	Best volatility structure (no remaining autocorrelation)
+## 🗂️ Repository Structure
 
-The ARIMA model successfully forecasts short-term mortality evolution.
-
-The GARCH layer captures fluctuations in variance and risk dynamics post-COVID.
-
-The COVID variable shows a temporary but statistically significant impact (2020–2021).
-
-🧮 Data Science Workflow
-
-Data preprocessing: filtering, cleaning, encoding normalization.
-
-EDA: visual inspection, trend/seasonality decomposition.
-
-Feature engineering: creation of COVID indicator variable.
-
-Model fitting: ARIMA and GARCH with diagnostic validation.
-
-Forecasting: one-year-ahead predictions (2024).
-
-Evaluation: model selection via AIC and residual diagnostics.
-
-Reporting: results visualized and interpreted in PDF summary.
-
-🧠 Key Data Science Competencies
-
-Time Series Forecasting (ARIMA, GARCH)
-
-Statistical Inference and Hypothesis Testing
-
-Volatility and Residual Modeling
-
-Feature Engineering (Exogenous Variables)
-
-Model Selection (AIC, Residual Diagnostics)
-
-Data Visualization with ggplot2
-
-Reproducible Analytical Workflows in R
-
-🗂️ Repository Structure
-Weekly-Mortality-Forecasting/
+```
+Weekly-Mortality-Forecasting-with-ARIMA-and-GARCH-Models/
 │
-├── datos.csv                              # Raw dataset (INE mortality data)
-├── PracticaAvaluable2-SeriesTemporals.pdf # Official project instructions
-├── Entrega2ST1638272.pdf                  # Final project report (PDF)
-├── CorrespondenciaNIUvsCCAAvsSEXO.xlsx    # Province/sex correspondence file
-├── Code_ARIMA_GARCH.R                     # Main R script
-├── LICENSE                                # MIT License
-└── README.md                              # Documentation (this file)
+├── datos.csv                                # INE raw dataset (weekly deaths)
+├── CorrespondenciaNIUvsCCAAvsSEXO (1).xlsx  # Province/gender mapping file
+├── Entrega2ST1638272.R                      # Full R code (ARIMA & GARCH models)
+├── Entrega2ST1638272.pdf                    # Final report (results and discussion)
+├── PracticaAvaluable2 - SeriesTemporals (2).pdf # Official assignment statement
+├── LICENSE                                  # MIT License
+└── README.md                                # Project documentation (this file)
+```
 
-🧩 Tools & Libraries
+---
 
-R (v4.x)
+## 🧩 Tools & Libraries
 
-forecast – ARIMA modeling and forecasting
+* **R** (v4.x)
+* `forecast` – ARIMA modeling and forecasting
+* `tseries` – Stationarity and ADF test
+* `TSA`, `lmtest` – Regression and statistical tests
+* `fGarch` – GARCH volatility models
+* `ggplot2`, `zoo` – Visualization and moving averages
 
-tseries – ADF test and time series diagnostics
+---
 
-TSA, lmtest – Statistical testing and residual analysis
+## 📄 License
 
-fGarch – GARCH volatility models
+Distributed under the **MIT License**.
+Free to use, reproduce, and adapt with attribution.
 
-ggplot2, zoo – Visualization and rolling means
+---
 
-📄 License
+## 💼 Tags
 
-Distributed under the MIT License. Free for academic and research use with attribution.
+`Data Science` · `Time Series` · `ARIMA` · `GARCH` · `Forecasting` · `R Programming` · `Predictive Analytics` · `Volatility Modeling` · `Statistical Modeling`
 
-💼 Tags
-
-Data Science · Time Series · ARIMA · GARCH · Forecasting · R Programming · Predictive Analytics · Volatility Modeling · Statistical Modeling
